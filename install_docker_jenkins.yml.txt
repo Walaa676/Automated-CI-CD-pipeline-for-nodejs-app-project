@@ -1,0 +1,67 @@
+---
+- name: Install Docker and Jenkins
+  hosts: localhost
+  connection: local
+  become: true
+  tasks:
+    - name: Gather APT cache
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install required packages
+      ansible.builtin.apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+        state: present
+
+    - name: Add Jenkins GPG key
+      ansible.builtin.shell: |
+        curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | tee /usr/share/keyrings/jenkins-keyring.asc
+      args:
+        executable: /bin/bash
+
+    - name: Add Jenkins APT repository
+      ansible.builtin.shell: |
+        echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" | tee /etc/apt/sources.list.d/jenkins.list
+      args:
+        executable: /bin/bash
+
+    - name: Update package lists
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Add Docker GPG key
+      ansible.builtin.apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker APT repository
+      ansible.builtin.apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Install Docker
+      ansible.builtin.apt:
+        name: docker-ce
+        state: present
+
+    - name: Install Jenkins
+      ansible.builtin.apt:
+        name: jenkins
+        state: present
+
+    - name: Start Jenkins service
+      ansible.builtin.service:
+        name: jenkins
+        state: started
+        enabled: true
+
+    - name: Start Docker service
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
