@@ -1,2 +1,3 @@
-# Automated-CI-CD-pipeline-for-nodejs-app-project
-Automated CI-CD Pipeline for Node.js App and PostgreSQL
+# Automated Node.js App and PostgreSQL Deployment using Docker, Jenkins, and Ansible
+Automated Node.js App and PostgreSQL Deployment using Docker, Jenkins, and Ansible
+This project demonstrates the automated deployment of a Node.js application and PostgreSQL database using Docker Compose, orchestrated by Jenkins on an EC2 instance provisioned with Terraform.
